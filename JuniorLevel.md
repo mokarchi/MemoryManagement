@@ -42,4 +42,46 @@ Long-lived memory pressure: _data is a class-level field, so it will remain in m
 Possible LOH (Large Object Heap) allocations: Each string is 20,000 bytes; anything >85,000 bytes lands in LOH, so individual strings are fine, but collectively they still cause memory pressure.
 
 
+# Optimized version (Efficient):
+```csharp
+public class EfficientDataProcessor : IDisposable
+{
+    private List<string> _data;
+    private bool _disposed;
 
+    public void ProcessData(int batchSize = 100, int maxItems = 1000)
+    {
+        _data = new List<string>(Math.Min(batchSize, maxItems));
+
+        for (int i = 0; i < Math.Min(10000, maxItems); i++)
+        {
+            _data.Add(new string('x', 10000));
+        }
+    }
+
+    public void ClearData()
+    {
+        _data?.Clear();
+    }
+
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                ClearData();
+                _data = null;
+            }
+
+            _disposed = true;
+        }
+    }
+}
+```
