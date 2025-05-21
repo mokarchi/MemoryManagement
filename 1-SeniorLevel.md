@@ -1,4 +1,4 @@
-# Review this async state machine optimization. What are the tradeoffs?
+Review this async state machine optimization. What are the tradeoffs?
 
 ```
 
